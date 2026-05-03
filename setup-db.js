@@ -114,7 +114,7 @@ async function setup() {
     INSERT INTO sites (slug, domain, display_name)
     VALUES
       ('weirdsciencefw', 'weirdsciencefw.com', 'Weird Science FW'),
-      ('driver8remband', 'driver8remband.com', 'Driver 8 R.E.M. Band'),
+      ('driver8remband', 'driver8remband.com', 'Driver 8'),
       ('graverobber', 'graverobberpunk.com', 'Grave Robber')
     ON CONFLICT (slug) DO NOTHING;
   `);
