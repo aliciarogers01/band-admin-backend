@@ -9,6 +9,8 @@ const messagesRoutes = require("./routes/messages");
 const submissionsRoutes = require("./routes/submissions");
 const settingsRoutes = require("./routes/settings");
 const uploadsRoutes = require("./routes/uploads");
+const mediaRoutes = require("./routes/media");
+const sectionsRoutes = require("./routes/sections");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +32,8 @@ app.use("/api/messages", messagesRoutes);
 app.use("/api/submissions", submissionsRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/uploads", uploadsRoutes);
+app.use("/api/media", mediaRoutes);
+app.use("/api/sections", sectionsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

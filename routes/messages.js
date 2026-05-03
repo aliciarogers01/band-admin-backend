@@ -11,9 +11,7 @@ router.post("/:siteSlug", async (req, res) => {
     req.params.siteSlug,
   ]);
 
-  if (!site.rows[0]) {
-    return res.status(404).json({ error: "Site not found" });
-  }
+  if (!site.rows[0]) return res.status(404).json({ error: "Site not found" });
 
   const result = await db.query(
     `INSERT INTO messages (site_id, fan_name, fan_email, message)
@@ -36,6 +34,19 @@ router.get("/:siteSlug", requireAuth, async (req, res) => {
   );
 
   res.json({ messages: result.rows });
+});
+
+router.get("/:siteSlug/:messageId/public", async (req, res) => {
+  const result = await db.query(
+    `SELECT messages.id, messages.message, messages.admin_reply, messages.replied_at, messages.created_at
+     FROM messages
+     JOIN sites ON sites.id = messages.site_id
+     WHERE sites.slug = $1
+     AND messages.id = $2`,
+    [req.params.siteSlug, req.params.messageId]
+  );
+
+  res.json({ message: result.rows[0] || null });
 });
 
 router.post("/:siteSlug/:messageId/reply", requireAuth, async (req, res) => {

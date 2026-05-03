@@ -76,6 +76,31 @@ async function setup() {
       message TEXT NOT NULL DEFAULT '',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    CREATE TABLE IF NOT EXISTS media (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+      url TEXT NOT NULL,
+      public_id TEXT NOT NULL,
+      label TEXT NOT NULL DEFAULT '',
+      alt_text TEXT NOT NULL DEFAULT '',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS page_sections (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+      page TEXT NOT NULL DEFAULT 'home',
+      section_type TEXT NOT NULL DEFAULT 'text',
+      title TEXT NOT NULL DEFAULT '',
+      body TEXT NOT NULL DEFAULT '',
+      image_url TEXT NOT NULL DEFAULT '',
+      button_text TEXT NOT NULL DEFAULT '',
+      button_url TEXT NOT NULL DEFAULT '',
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      is_visible BOOLEAN NOT NULL DEFAULT true,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
   `);
 
   await db.query(
