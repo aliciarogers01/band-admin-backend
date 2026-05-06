@@ -40,8 +40,27 @@ async function setup() {
       background_image_url TEXT NOT NULL DEFAULT '',
       font_family TEXT NOT NULL DEFAULT 'Arial, sans-serif',
       layout_style TEXT NOT NULL DEFAULT 'classic',
+      nav_links JSONB NOT NULL DEFAULT '[]'::jsonb,
+      social_links JSONB NOT NULL DEFAULT '[]'::jsonb,
+      signup_title TEXT NOT NULL DEFAULT '',
+      signup_description TEXT NOT NULL DEFAULT '',
+      signup_button_text TEXT NOT NULL DEFAULT 'Sign Up',
+      signup_success_text TEXT NOT NULL DEFAULT 'Thank you! You are signed up.',
+      notify_title TEXT NOT NULL DEFAULT '',
+      notify_description TEXT NOT NULL DEFAULT '',
+      notify_button_text TEXT NOT NULL DEFAULT 'Get Notified',
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS nav_links JSONB NOT NULL DEFAULT '[]'::jsonb;
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS social_links JSONB NOT NULL DEFAULT '[]'::jsonb;
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS signup_title TEXT NOT NULL DEFAULT '';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS signup_description TEXT NOT NULL DEFAULT '';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS signup_button_text TEXT NOT NULL DEFAULT 'Sign Up';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS signup_success_text TEXT NOT NULL DEFAULT 'Thank you! You are signed up.';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS notify_title TEXT NOT NULL DEFAULT '';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS notify_description TEXT NOT NULL DEFAULT '';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS notify_button_text TEXT NOT NULL DEFAULT 'Get Notified';
 
     CREATE TABLE IF NOT EXISTS shows (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
