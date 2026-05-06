@@ -102,27 +102,14 @@ async function setup() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
-    CREATE TABLE IF NOT EXISTS visual_edits (
+    CREATE TABLE IF NOT EXISTS visual_page_edits (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
       page TEXT NOT NULL DEFAULT 'home',
-      element_id TEXT NOT NULL,
-      element_label TEXT NOT NULL DEFAULT '',
-      content_json JSONB NOT NULL DEFAULT '{}'::jsonb,
-      style_json JSONB NOT NULL DEFAULT '{}'::jsonb,
-      is_hidden BOOLEAN NOT NULL DEFAULT false,
+      edits JSONB NOT NULL DEFAULT '{"items":{},"history":[]}'::jsonb,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      UNIQUE(site_id, page, element_id)
-    );
-
-    CREATE TABLE IF NOT EXISTS visual_edit_history (
-      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
-      page TEXT NOT NULL DEFAULT 'home',
-      element_id TEXT NOT NULL,
-      previous_edit JSONB,
-      action TEXT NOT NULL DEFAULT 'update',
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      UNIQUE(site_id, page)
     );
   `);
 
