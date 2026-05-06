@@ -40,12 +40,8 @@ async function setup() {
       background_image_url TEXT NOT NULL DEFAULT '',
       font_family TEXT NOT NULL DEFAULT 'Arial, sans-serif',
       layout_style TEXT NOT NULL DEFAULT 'classic',
-      visual_state JSONB NOT NULL DEFAULT '{}'::jsonb,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
-
-    ALTER TABLE settings
-      ADD COLUMN IF NOT EXISTS visual_state JSONB NOT NULL DEFAULT '{}'::jsonb;
 
     CREATE TABLE IF NOT EXISTS shows (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -103,6 +99,29 @@ async function setup() {
       button_url TEXT NOT NULL DEFAULT '',
       sort_order INTEGER NOT NULL DEFAULT 0,
       is_visible BOOLEAN NOT NULL DEFAULT true,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS visual_edits (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+      page TEXT NOT NULL DEFAULT 'home',
+      element_id TEXT NOT NULL,
+      element_label TEXT NOT NULL DEFAULT '',
+      content_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+      style_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+      is_hidden BOOLEAN NOT NULL DEFAULT false,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE(site_id, page, element_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS visual_edit_history (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+      page TEXT NOT NULL DEFAULT 'home',
+      element_id TEXT NOT NULL,
+      previous_edit JSONB,
+      action TEXT NOT NULL DEFAULT 'update',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `);

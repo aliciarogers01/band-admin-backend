@@ -11,6 +11,7 @@ const settingsRoutes = require("./routes/settings");
 const uploadsRoutes = require("./routes/uploads");
 const mediaRoutes = require("./routes/media");
 const sectionsRoutes = require("./routes/sections");
+const visualEditsRoutes = require("./routes/visual-edits");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -34,6 +35,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/uploads", uploadsRoutes);
 app.use("/api/media", mediaRoutes);
 app.use("/api/sections", sectionsRoutes);
+app.use("/api/visual-edits", visualEditsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
