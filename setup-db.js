@@ -43,6 +43,17 @@ async function setup() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    CREATE TABLE IF NOT EXISTS visual_pages (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+      page TEXT NOT NULL DEFAULT 'home',
+      project_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+      html TEXT NOT NULL DEFAULT '',
+      css TEXT NOT NULL DEFAULT '',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE(site_id, page)
+    );
+
     CREATE TABLE IF NOT EXISTS shows (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,

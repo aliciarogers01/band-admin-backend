@@ -11,6 +11,7 @@ const settingsRoutes = require("./routes/settings");
 const uploadsRoutes = require("./routes/uploads");
 const mediaRoutes = require("./routes/media");
 const sectionsRoutes = require("./routes/sections");
+const visualPagesRoutes = require("./routes/visual-pages");
 const visualEditsRoutes = require("./routes/visual-edits");
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/uploads", uploadsRoutes);
 app.use("/api/media", mediaRoutes);
 app.use("/api/sections", sectionsRoutes);
+app.use("/api/visual-pages", visualPagesRoutes);
 app.use("/api/visual-edits", visualEditsRoutes);
 
 app.listen(PORT, () => {
