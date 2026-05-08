@@ -136,8 +136,15 @@ async function setup() {
     VALUES
       ('weirdsciencefw', 'weirdsciencefw.com', 'Weird Science FW'),
       ('driver8remband', 'driver8remband.com', 'Driver 8'),
-      ('graverobber', 'graverobberpunk.com', 'Grave Robber')
+      ('graverobberpunk', 'graverobberpunk.com', 'Grave Robber')
     ON CONFLICT (slug) DO NOTHING;
+  `);
+
+  await db.query(`
+    UPDATE sites
+    SET slug = 'graverobberpunk'
+    WHERE slug = 'graverobber'
+    AND domain = 'graverobberpunk.com';
   `);
 
   await db.query(`
