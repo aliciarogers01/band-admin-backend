@@ -62,6 +62,7 @@ async function setup() {
       city TEXT NOT NULL DEFAULT '',
       state TEXT NOT NULL DEFAULT '',
       ticket_url TEXT NOT NULL DEFAULT '',
+      image_url TEXT NOT NULL DEFAULT '',
       notes TEXT NOT NULL DEFAULT '',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
@@ -72,7 +73,9 @@ async function setup() {
       fan_name TEXT NOT NULL DEFAULT '',
       fan_email TEXT NOT NULL DEFAULT '',
       message TEXT NOT NULL,
+      fan_image_url TEXT NOT NULL DEFAULT '',
       admin_reply TEXT NOT NULL DEFAULT '',
+      admin_image_url TEXT NOT NULL DEFAULT '',
       read_at TIMESTAMPTZ,
       replied_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -130,6 +133,15 @@ async function setup() {
      ON CONFLICT (email) DO NOTHING`,
     [adminEmail, adminPasswordHash]
   );
+
+  await db.query(`
+    ALTER TABLE shows
+    ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
+
+    ALTER TABLE messages
+    ADD COLUMN IF NOT EXISTS fan_image_url TEXT NOT NULL DEFAULT '',
+    ADD COLUMN IF NOT EXISTS admin_image_url TEXT NOT NULL DEFAULT '';
+  `);
 
   await db.query(`
     INSERT INTO sites (slug, domain, display_name)

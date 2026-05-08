@@ -18,7 +18,7 @@ router.get("/:siteSlug", async (req, res) => {
 });
 
 router.post("/:siteSlug", requireAuth, async (req, res) => {
-  const { show_date, venue, city, state, ticket_url, notes } = req.body;
+  const { show_date, venue, city, state, ticket_url, image_url, notes } = req.body;
 
   const site = await db.query("SELECT id FROM sites WHERE slug = $1", [
     req.params.siteSlug,
@@ -27,17 +27,17 @@ router.post("/:siteSlug", requireAuth, async (req, res) => {
   if (!site.rows[0]) return res.status(404).json({ error: "Site not found" });
 
   const result = await db.query(
-    `INSERT INTO shows (site_id, show_date, venue, city, state, ticket_url, notes)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO shows (site_id, show_date, venue, city, state, ticket_url, image_url, notes)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
      RETURNING *`,
-    [site.rows[0].id, show_date, venue, city || "", state || "", ticket_url || "", notes || ""]
+    [site.rows[0].id, show_date, venue, city || "", state || "", ticket_url || "", image_url || "", notes || ""]
   );
 
   res.json({ show: result.rows[0] });
 });
 
 router.put("/:siteSlug/:showId", requireAuth, async (req, res) => {
-  const { show_date, venue, city, state, ticket_url, notes } = req.body;
+  const { show_date, venue, city, state, ticket_url, image_url, notes } = req.body;
 
   const result = await db.query(
     `UPDATE shows
@@ -46,8 +46,9 @@ router.put("/:siteSlug/:showId", requireAuth, async (req, res) => {
          city = $3,
          state = $4,
          ticket_url = $5,
-         notes = $6
-     WHERE id = $7
+         image_url = $6,
+         notes = $7
+     WHERE id = $8
      AND site_id = (SELECT id FROM sites WHERE slug = $8)
      RETURNING *`,
     [
@@ -56,6 +57,7 @@ router.put("/:siteSlug/:showId", requireAuth, async (req, res) => {
       city || "",
       state || "",
       ticket_url || "",
+      image_url || "",
       notes || "",
       req.params.showId,
       req.params.siteSlug,
