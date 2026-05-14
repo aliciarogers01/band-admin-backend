@@ -16,7 +16,34 @@ const visualPagesRoutes = require("./routes/visual-pages");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "http://localhost:5000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:4173",
+  "http://127.0.0.1:5000",
+  "https://driver8remband.com",
+  "https://www.driver8remband.com",
+  "https://weirdsciencefw.com",
+  "https://www.weirdsciencefw.com",
+  "https://graverobberpunk.com",
+  "https://www.graverobberpunk.com"
+];
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked origin: ${origin}`));
+  },
+  credentials: true
+}));
+
+app.options("*", cors());
 app.use(express.json({ limit: "10mb" }));
 
 app.get("/", (req, res) => {
