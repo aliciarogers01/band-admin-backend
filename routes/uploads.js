@@ -44,4 +44,29 @@ router.post("/:siteSlug", requireAuth, upload.single("image"), async (req, res) 
   }
 });
 
+router.post("/:siteSlug/public", upload.single("image"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Image file is required" });
+  }
+
+  if (!req.file.mimetype || !req.file.mimetype.startsWith("image/")) {
+    return res.status(400).json({ error: "Only image files are allowed" });
+  }
+
+  try {
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      `band-sites/${req.params.siteSlug}/fan-submissions`
+    );
+
+    res.json({
+      url: result.secure_url,
+      public_id: result.public_id,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Cloudinary upload failed" });
+  }
+});
+
 module.exports = router;

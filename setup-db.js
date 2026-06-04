@@ -74,6 +74,8 @@ async function setup() {
       fan_email TEXT NOT NULL DEFAULT '',
       message TEXT NOT NULL,
       fan_image_url TEXT NOT NULL DEFAULT '',
+      fan_art_url TEXT NOT NULL DEFAULT '',
+      is_approved BOOLEAN NOT NULL DEFAULT false,
       admin_reply TEXT NOT NULL DEFAULT '',
       admin_image_url TEXT NOT NULL DEFAULT '',
       read_at TIMESTAMPTZ,
@@ -136,10 +138,16 @@ async function setup() {
 
   await db.query(`
     ALTER TABLE shows
+    ADD COLUMN IF NOT EXISTS end_date DATE,
+    ADD COLUMN IF NOT EXISTS start_time TIME,
+    ADD COLUMN IF NOT EXISTS end_time TIME,
+    ADD COLUMN IF NOT EXISTS social_urls JSONB NOT NULL DEFAULT '[]'::jsonb,
     ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
 
     ALTER TABLE messages
     ADD COLUMN IF NOT EXISTS fan_image_url TEXT NOT NULL DEFAULT '',
+    ADD COLUMN IF NOT EXISTS fan_art_url TEXT NOT NULL DEFAULT '',
+    ADD COLUMN IF NOT EXISTS is_approved BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN IF NOT EXISTS admin_image_url TEXT NOT NULL DEFAULT '';
   `);
 
