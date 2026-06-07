@@ -6,12 +6,17 @@ const requireAuth = require("../middleware/auth");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-function uploadToCloudinary(buffer, folder) {
+function mediaResourceType(mimetype) {
+  if (mimetype && mimetype.startsWith("video/")) return "video";
+  return "image";
+}
+
+function uploadToCloudinary(buffer, folder, resourceType = "image") {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder,
-        resource_type: "image",
+        resource_type: resourceType,
       },
       (error, result) => {
         if (error) reject(error);
@@ -25,18 +30,28 @@ function uploadToCloudinary(buffer, folder) {
 
 router.post("/:siteSlug", requireAuth, upload.single("image"), async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: "Image file is required" });
+    return res.status(400).json({ error: "Media file is required" });
+  }
+
+  const isImage = req.file.mimetype && req.file.mimetype.startsWith("image/");
+  const isVideo = req.file.mimetype && req.file.mimetype.startsWith("video/");
+
+  if (!isImage && !isVideo) {
+    return res.status(400).json({ error: "Only image and video files are allowed" });
   }
 
   try {
+    const resourceType = mediaResourceType(req.file.mimetype);
     const result = await uploadToCloudinary(
       req.file.buffer,
-      `band-sites/${req.params.siteSlug}`
+      `band-sites/${req.params.siteSlug}`,
+      resourceType
     );
 
     res.json({
       url: result.secure_url,
       public_id: result.public_id,
+      media_type: resourceType,
     });
   } catch (error) {
     console.error(error);
