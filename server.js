@@ -28,10 +28,11 @@ const allowedOrigins = [
   "https://weirdsciencefw.com",
   "https://www.weirdsciencefw.com",
   "https://graverobberpunk.com",
-  "https://www.graverobberpunk.com"
+  "https://www.graverobberpunk.com",
+  "https://aliciarogers01.github.io"
 ];
 
-app.use(cors({
+const corsOptions = {
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -41,10 +42,20 @@ app.use(cors({
     callback(new Error(`CORS blocked origin: ${origin}`));
   },
   credentials: true
-}));
+};
 
-app.options("*", cors());
-app.use(express.json({ limit: "10mb" }));
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
+app.use(express.json({ limit: "50mb" }));
+app.use((error, req, res, next) => {
+  if (error?.type === "entity.too.large") {
+    res.status(413).json({ error: "That update is too large to save. Try smaller media files or fewer embedded images, then publish again." });
+    return;
+  }
+
+  next(error);
+});
 
 app.get("/", (req, res) => {
   res.send("Band admin backend is running.");
