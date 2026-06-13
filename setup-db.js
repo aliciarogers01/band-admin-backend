@@ -127,6 +127,17 @@ async function setup() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       UNIQUE(site_id, page)
     );
+
+    CREATE TABLE IF NOT EXISTS daily_visitors (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+      visit_date DATE NOT NULL DEFAULT ((NOW() AT TIME ZONE 'America/New_York')::date),
+      ip_address TEXT NOT NULL,
+      user_agent TEXT NOT NULL DEFAULT '',
+      first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE(site_id, visit_date, ip_address)
+    );
   `);
 
   await db.query(
