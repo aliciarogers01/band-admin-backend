@@ -30,6 +30,8 @@ const allowedOrigins = [
   "https://www.driver8remband.com",
   "https://weirdsciencefw.com",
   "https://www.weirdsciencefw.com",
+  "http://graverobberpunk.com",
+  "http://www.graverobberpunk.com",
   "https://graverobberpunk.com",
   "https://www.graverobberpunk.com",
   "https://aliciarogers01.github.io"
